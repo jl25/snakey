@@ -21,7 +21,8 @@ class Snake:
         
         # Protects snake's attributes.
         self.l = threading.Lock()
-        
+    
+    # Returns true if food is eaten. Returns None if invalid step.
     def _step(self, pos_food):
         self.l.acquire()
         
@@ -32,10 +33,10 @@ class Snake:
         yp += ys
         
         # Check if the head has eaten food.
-        ate_food = False
+        ate_food = True
         xf, yf = pos_food
         if not (xf == xp and yf == yp):
-            ate_food = True
+            ate_food = False
             self.pos.pop()             # Discard the last position of the snake
             
         # Check if snake has hit itself or a wall.
@@ -47,7 +48,7 @@ class Snake:
         
         self.pos.appendleft((xp, yp))
         self.l.release()
-        return(valid, ate_food)
+        return(ate_food if valid else None)
     
     def _hit_wall(self, xp, yp):
         w = self.map_size
@@ -64,11 +65,13 @@ class Snake:
 def test_snake():
     s = Snake(map_size = 10)
     for i in range(0, 5):
-        assert(s._step((10, 10)))
+        assert(not s._step((10, 10)))
     s._change_dir('E')
-    for i in range(0, 5):
-        assert(s._step((10, 10)))             # eats food on the last step
+    for i in range(0, 4):
+        assert(not s._step((10, 10)))
+    assert(s._step((10, 10)) == True)         # eats food on the last step
     
-    assert(s._step((0, 0)) == False)        # hit a wall
+    assert(s._step((0, 0)) == None)           # hit a wall
     assert(s.pos.pop() == (10, 10))
     assert(s.pos.pop() == (11, 10))
+    assert(len(s.pos) == 0)
