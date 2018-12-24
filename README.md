@@ -1,3 +1,3 @@
 # snakey
 
-Run "python3 snake_maser.py" in terminal to play.
+Run "python3 snake_master.py" in terminal to play.

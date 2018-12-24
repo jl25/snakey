@@ -10,21 +10,24 @@ import snake
 from curses import KEY_RIGHT, KEY_LEFT, KEY_UP, KEY_DOWN
 from random import randint
 
-map_size = 30
+x_size = 60
+y_size = 20
 
 curses.initscr()
-win = curses.newwin(map_size, map_size, 0, 0)
+win = curses.newwin(y_size, x_size, 0, 0)
 win.keypad(1)
 curses.noecho()
 curses.curs_set(0)
 win.border(0)
 win.nodelay(1)
 
-# Initialization of snake.
+# Initialization of snake. Offset the map by the appropriate amount so
+# the graphics are appropriately offset.
+STEP_DIR_MAP = {'N': [-1, 0], 'E': [0, 1], 'S': [1, 0], 'W': [0, -1]}
 key = KEY_RIGHT
 score = 0
-s = snake.Snake(map_size)     # Initial snake co-ordinates
-food = [15,10]                # First food co-ordinates
+s = snake.Snake(y_size-3, x_size-3, STEP_DIR_MAP)
+food = [15,10]                          # First food co-ordinates
 
 win.addch(food[0], food[1], '*')
 
@@ -65,14 +68,14 @@ while key != 27:
     # If the snake eats food, generate a new food position.
     if res == True:
         score += 1
-        food = [randint(1, map_size - 2), randint(1, map_size - 2)]
+        food = [randint(1, y_size - 1), randint(2, x_size - 1)]
         while food in s.pos:
-            food = [randint(1, map_size - 2), randint(1, map_size - 2)]
+            food = [randint(1, y_size - 1), randint(2, x_size - 1)]
         win.addch(food[0], food[1], '*')
 
     last = s.pos[-1]
-    win.addch(last_pos[0], last_pos[1], ' ')
-    win.addch(s.pos[0][0], s.pos[0][1], '#')
+    win.addch(last_pos[0]+1, last_pos[1]+1, ' ')
+    win.addch(s.pos[0][0]+1, s.pos[0][1]+1, '#')
     
 curses.endwin()
 print("\nScore - " + str(score))
