@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Snake core implementation.
 @author: jzlin@mit.edu
 """
 
@@ -45,7 +46,6 @@ class Snake:
         for p in self.pos:
             ys, xs = p
             if (xp == xs and yp == ys):
-                print('Head: %d, %d' % (xp, yp))
                 valid = False
         
         self.pos.appendleft((yp, xp))
